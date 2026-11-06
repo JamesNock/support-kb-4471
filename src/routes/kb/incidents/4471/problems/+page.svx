@@ -1,0 +1,55 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: support desk
+status: open
+reviewed: 2026-11-06
+signature: 'James Nock, with Claude Code'
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) is marked **known: one issue, one fix queued**. Read report by report, it
+holds three problems. The queued parser fix closes only the first.
+
+<Callout kind="warn">
+Not one bug. Fixing the parser leaves the booking-v3 form hint and the one-day move open.
+Each now has a ticket of its own.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} />
+
+## How the reports were sorted
+
+1. **One report, one count.** The export repeats some reports across its pages. Each id is counted once.
+2. **Read the body, not the subject.** Most bodies name two dates: what was booked and what arrived.
+   In almost all of them the second is the first with day and month swapped. A swap is a flip bug.
+3. **Flip bugs split by tenant and channel, not by intake tag.** Every tenant on file writes the day first.
+   A report through the form of a `booking-v3` tenant is `hint`: that form prints `MM/DD/YYYY` under
+   its date field. Everything else is `parser`. The intake tag is a guess from the browser and is often wrong.
+4. **A one-day move is not a swap.** The reports the desk already marked as a one-day move
+   ([desk notes](https://github.com/JamesNock/support-kb-4471/blob/main/src/lib/data/desk-notes.json))
+   describe a date that moves by a single day: the weekday is off by one, a client in Lisbon and a client in
+   Toronto see different days, an invite arrives before the booking was made. A month-first parser cannot do
+   that. They were footnoted under `parser`; here they are a problem of their own.
+
+## The old view, for comparison
+
+The table on the incident page, unchanged. It counts the one-day moves under `parser`.
+
+<CauseTable ticket={4471} />
+
+## Why they were merged
+
+[Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges on subject line alone. All three problems
+come in as "wrong day" and "wrong date", so all three landed in one ticket. Subjects tell you the
+symptom; the tenant, the channel and the body tell you the bug.
+
+<RenderStamp {signature} />
