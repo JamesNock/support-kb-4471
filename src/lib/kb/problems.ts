@@ -1,7 +1,7 @@
-// What #4471 holds, problem by problem. causes.ts sorts a report by its tenant and the way it came in;
-// that is right for the two flip bugs. It cannot see a report that describes a one-day move: those
-// read as a different bug, and the desk already marked them (desk-notes.json). Here they get a
-// problem of their own instead of a footnote under `parser`.
+// What #4471 holds, problem by problem, counted the desk's way. causes.ts files every report under the
+// flip bug its tenant and channel give it (`parser` or `hint`); this file keeps that count as it is.
+// The reports the desk read as a one-day move (desk-notes.json) are a third problem: they get a row and
+// a ticket of their own, and stay counted where the desk files them, so the rows overlap by that many.
 import { causeOf, uniqueById, type Report, type Tenant } from '#lib/kb/causes';
 
 export type Problem = 'parser' | 'hint' | 'one-day';
@@ -16,9 +16,11 @@ export const SUMMARY: Record<Problem, string> = {
   'one-day': 'The date moves by exactly one day, not a swap. Weekday off by one, varies by where the reader is: a time-zone bug.',
 };
 
-export function problemOf(r: Report, t: Tenant | undefined, oneDay: readonly string[]): Problem | 'unplaced' {
-  if (oneDay.includes(r.id)) return 'one-day';
-  return causeOf(r, t) ?? 'unplaced';
+// Every problem a report counts toward: the flip bug the desk files it under, plus `one-day` if the
+// desk read it as a one-day move.
+export function problemsOf(r: Report, t: Tenant | undefined, oneDay: readonly string[]): (Problem | 'unplaced')[] {
+  const filed = causeOf(r, t) ?? 'unplaced';
+  return oneDay.includes(r.id) ? [filed, 'one-day'] : [filed];
 }
 
 export type ProblemRow = {
@@ -38,12 +40,11 @@ export function problemsIn(
   ticket: number,
   tenantOf: (r: Report) => Tenant | undefined,
   oneDay: readonly string[],
-): { merged: number; exportRows: number; rows: ProblemRow[] } {
+): { merged: number; exportRows: number; overlap: number; rows: ProblemRow[] } {
   const merged = uniqueById(all).filter((r) => r.mergedInto === ticket);
   const by = new Map<ProblemRow['problem'], Report[]>();
   for (const r of merged) {
-    const p = problemOf(r, tenantOf(r), oneDay);
-    by.set(p, [...(by.get(p) ?? []), r]);
+    for (const p of problemsOf(r, tenantOf(r), oneDay)) by.set(p, [...(by.get(p) ?? []), r]);
   }
   const rows = [...by.entries()]
     .map(([problem, rs]) => {
@@ -59,5 +60,6 @@ export function problemsIn(
       };
     })
     .sort((a, b) => b.reports - a.reports);
-  return { merged: merged.length, exportRows: all.length, rows };
+  const overlap = merged.filter((r) => oneDay.includes(r.id)).length;
+  return { merged: merged.length, exportRows: all.length, overlap, rows };
 }

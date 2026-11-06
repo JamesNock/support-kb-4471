@@ -20,6 +20,11 @@
   ({result.exportRows - result.merged} repeated rows in the export dropped) ·
   <strong>{result.rows.length}</strong> problems
 </p>
+<p class="note">
+  Counted the desk's way: each report under the flip bug its tenant and channel file it under. The
+  {result.overlap} one-day moves also count toward <code>one-day</code>, so the rows add up to
+  {result.merged + result.overlap}.
+</p>
 
 <table>
   <thead>
@@ -60,5 +65,6 @@
 
 <style>
   .sum { font-size: 1.1rem; }
+  .note { color: var(--muted); font-size: 0.85em; }
   .detail { font-size: 0.85em; color: var(--muted); }
 </style>

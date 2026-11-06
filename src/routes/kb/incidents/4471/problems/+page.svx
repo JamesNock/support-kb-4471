@@ -38,11 +38,12 @@ Each now has a ticket of its own.
    ([desk notes](https://github.com/JamesNock/support-kb-4471/blob/main/src/lib/data/desk-notes.json))
    describe a date that moves by a single day: the weekday is off by one, a client in Lisbon and a client in
    Toronto see different days, an invite arrives before the booking was made. A month-first parser cannot do
-   that. They were footnoted under `parser`; here they are a problem of their own.
+   that. The desk files them under `parser` by tenant and footnotes them; they stay counted there, and
+   here they are also a problem of their own.
 
 ## The old view, for comparison
 
-The table on the incident page, unchanged. It counts the one-day moves under `parser`.
+The table on the incident page, unchanged. Same counts for `parser` and `hint`; the one-day moves are only a footnote there.
 
 <CauseTable ticket={4471} />
 
