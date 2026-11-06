@@ -3,7 +3,7 @@
   import notes from '#lib/data/desk-notes.json';
   import type { Report } from '#lib/kb/causes';
   import { tenantOf } from '#lib/kb/locales';
-  import { problemsIn, SUMMARY, TICKET_REPO, TICKETS } from '#lib/kb/problems';
+  import { OUTCOME, problemsIn, SUMMARY, TICKET_REPO, TICKETS } from '#lib/kb/problems';
 
   let { ticket }: { ticket: number } = $props();
 
@@ -28,7 +28,7 @@
 
 <table>
   <thead>
-    <tr><th>problem</th><th>reports</th><th>ticket</th><th>what it is</th></tr>
+    <tr><th>problem</th><th>reports</th><th>ticket</th><th>where it stands</th><th>what it is</th></tr>
   </thead>
   <tbody>
     {#each result.rows as row (row.problem)}
@@ -40,6 +40,7 @@
             <a href="{TICKET_REPO}/issues/{TICKETS[row.problem]}">#{TICKETS[row.problem]}</a>
           {:else}—{/if}
         </td>
+        <td class:open={row.problem === 'one-day'}>{row.problem !== 'unplaced' ? OUTCOME[row.problem] : '—'}</td>
         <td>{row.problem !== 'unplaced' ? SUMMARY[row.problem] : 'no tenant on file'}</td>
       </tr>
     {/each}
@@ -65,6 +66,7 @@
 
 <style>
   .sum { font-size: 1.1rem; }
+  .open { color: var(--warn); font-weight: 600; }
   .note { color: var(--muted); font-size: 0.85em; }
   .detail { font-size: 0.85em; color: var(--muted); }
 </style>

@@ -10,6 +10,13 @@ export type Problem = 'parser' | 'hint' | 'one-day';
 export const TICKET_REPO = 'https://github.com/JamesNock/support-kb-4471';
 export const TICKETS: Record<Problem, number> = { parser: 1, hint: 2, 'one-day': 3 };
 
+// Where each problem stands. Engineering closed #4471 on 5 Oct 2026; that update covers two of the three.
+export const OUTCOME: Record<Problem, string> = {
+  parser: 'fixed · fix(dates): parse dd/mm for eu locales',
+  hint: "won't fix · booking-v3 form retired",
+  'one-day': 'open · not covered by the #4471 fix',
+};
+
 export const SUMMARY: Record<Problem, string> = {
   parser: 'The shared parser reads every date month first. Day-first tenants get day and month swapped.',
   hint: "booking-v3's form prints MM/DD/YYYY under the date field. Day-first tenants' people type month first, and the form reads it day first.",

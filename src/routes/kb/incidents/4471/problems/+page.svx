@@ -14,12 +14,13 @@ signature: 'James Nock, with Claude Code'
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 </script>
 
-[#4471](/kb/incidents/4471) is marked **known: one issue, one fix queued**. Read report by report, it
-holds three problems. The queued parser fix closes only the first.
+[#4471](/kb/incidents/4471) was merged as one issue. Read report by report, it holds three problems.
+Engineering closed #4471 on 5 October 2026: the parser is fixed and the booking-v3 form is retired.
+That settles two of them. The one-day move is still open.
 
 <Callout kind="warn">
-Not one bug. Fixing the parser leaves the booking-v3 form hint and the one-day move open.
-Each now has a ticket of its own.
+#4471 is closed, but not every report in it is. The one-day move is a different bug, a date shifted
+by a single day, and neither the parser fix nor retiring booking-v3 touches it.
 </Callout>
 
 ## What #4471 holds
